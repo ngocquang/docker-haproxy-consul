@@ -2,7 +2,7 @@ global
         chroot /var/lib/haproxy
         user haproxy
         group haproxy
-        
+
         # Default SSL material locations
         ca-base /etc/ssl/certs
         crt-base /etc/ssl/private
@@ -19,7 +19,7 @@ defaults
         timeout client 50000
         timeout server 50000
 
-listen stats 
+listen stats
         bind *:8080
         stats enable
         stats uri /
@@ -44,6 +44,12 @@ frontend www
   {{ end }}
 
         use_backend {{ .Name }}_backend if host_{{ .Name }}
+{{ if env "HAPROXY_BACKEND_DEFAULT" }}
+  default_backend {{env "HAPROXY_DOMAIN"}}_backend
+{{ end }}
+
+
+
 {{ end }}
 
 {{ range services }}
