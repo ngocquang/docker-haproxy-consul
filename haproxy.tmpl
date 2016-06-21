@@ -44,13 +44,11 @@ frontend www
   {{ end }}
 
         use_backend {{ .Name }}_backend if host_{{ .Name }}
-{{ if env "HAPROXY_BACKEND_DEFAULT" }}
-  {{ $haproxy_default := env "HAPROXY_BACKEND_DEFAULT" }}
-  default_backend {{ $haproxy_default }}_backend
 
 {{ end }}
-
-
+{{ if env "HAPROXY_BACKEND_DEFAULT" }}
+  {{ $haproxy_default := env "HAPROXY_BACKEND_DEFAULT" }}
+        default_backend {{ $haproxy_default }}_backend
 
 {{ end }}
 
@@ -60,6 +58,6 @@ backend {{ .Name }}_backend
       # sticky
   {{ end }}
   {{ range service .Name }}
-        server {{ .ID }} {{ .Address }}:{{ .Port }}
+        server {{ .ID }} {{ .Address }}:{{ .Port }}  check port 80
   {{ end }}
 {{ end }}
