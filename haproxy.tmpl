@@ -20,9 +20,22 @@ defaults
         timeout server 50000
 
 listen stats
+{{ if env "HAPROXY_BIND_1940" }}
         bind *:1940
+{{ end }}
+{{ if env "HAPROXY_BIND_SSL" }}
+  {{ $haproxy_bind_ssl := env "HAPROXY_BIND_SSL"}}
+        bind *:50000 ssl crt {{ $haproxy_bind_ssl }}
+{{ end }}
         stats enable
-        stats uri /
+        stats uri /haproxy?stats
+        stats hide-version
+{{ if env "HARPROXY_STATS_USER" }}
+  {{ $haproxy_stats_user := env "HARPROXY_STATS_USER"}}
+  {{ $haproxy_stats_pass := env "HARPROXY_STATS_PASS"}}
+        stats realm Haproxy\ Statistics
+        stats auth {{ $haproxy_stats_user }}:{{ $haproxy_stats_pass }}
+{{ end }}
 
 frontend www
         bind *:80
