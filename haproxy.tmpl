@@ -54,6 +54,9 @@ frontend www
     {{ if . | regexMatch "server_alias=" }}
         acl host_{{ $service.Name }} hdr(host) -i {{ . | regexReplaceAll ".*=" "" }}
     {{ end }}
+    {{ if . | regexMatch "path_alias=" }}
+        acl host_{{ $service.Name }} path_beg -i {{ . | regexReplaceAll ".*=" "" }}
+    {{ end }}
   {{ end }}
 
         use_backend {{ .Name }}_backend if host_{{ .Name }}
@@ -67,8 +70,14 @@ frontend www
 
 {{ range services }}
 backend {{ .Name }}_backend
+  balance roundrobin
   {{ if .Tags | contains "sticky_session" }}
       # sticky
+  {{ end }}
+  {{ range .Tags }}
+    {{ if . | regexMatch "path_alias=" }}
+        reqrep ^([^\ :]*)\ {{ . | regexReplaceAll ".*=" "" }}/(.*) \1\ /\2
+    {{ end }}
   {{ end }}
   {{ range service .Name }}
         server {{ .ID }} {{ .Address }}:{{ .Port }}  check port 80
