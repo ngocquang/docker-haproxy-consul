@@ -66,7 +66,8 @@ frontend www
         acl host_{{ $service.Name }} hdr(host) -i {{ . | regexReplaceAll ".*=" "" }}
     {{ end }}
     {{ if . | regexMatch "path_alias=" }}
-        acl host_{{ $service.Name }} path_beg -i {{ . | regexReplaceAll ".*=" "" }}
+        #acl host_{{ $service.Name }} path_beg -i {{ . | regexReplaceAll ".*=" "" }}
+        acl host_{{ $service.Name }} url_reg ^\{{ . | regexReplaceAll ".*=" "" }}/.*
     {{ end }}
   {{ end }}
 
