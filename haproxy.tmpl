@@ -88,8 +88,7 @@ backend {{ .Name }}_backend
   {{ end }}
   {{ range .Tags }}
     {{ if . | regexMatch "path_alias=" }}
-        #reqrep ^([^\ :]*)\ {{ . | regexReplaceAll ".*=" "" }}/(.*) \1\ /\2
-        reqrep ^([^\ :]*)\ {{ . | regexReplaceAll ".*=" "" }}/(.*) \1\2
+        reqrep ^([^\ :]*)\ {{ . | regexReplaceAll ".*=" "" }}/(.*) \1\ /\2
     {{ end }}
   {{ end }}
   {{ range service .Name }}
