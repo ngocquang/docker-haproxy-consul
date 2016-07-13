@@ -89,7 +89,7 @@ backend {{ .Name }}_backend
   {{ range .Tags }}
     {{ if . | regexMatch "path_alias=" }}
         #reqrep ^([^\ :]*)\ {{ . | regexReplaceAll ".*=" "" }}/(.*) \1\ /\2
-        reqrep ^([^\ ]\*)\ /([-.0-9A-Za-z]\*)/([a-zA-Z]\*)/(.\*)  \1\ /\3-\2/\4
+        reqrep ^([^\ :]*)\ {{ . | regexReplaceAll ".*=" "" }}/(.*) \1\2
     {{ end }}
   {{ end }}
   {{ range service .Name }}
